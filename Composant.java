@@ -18,7 +18,6 @@ public class Composant {
         Composant copie = new Composant(this.categorie, this.marque, this.nom, this.prix);
         copie.rabais = this.rabais;
         return copie;
-
     }
 
     public boolean estIdentique(){
