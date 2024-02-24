@@ -15,6 +15,9 @@ public class Composant {
 
     public Composant Copier(){
         //Faire methode de copie standard de l'objet
+        Composant copie = new Composant(this.categorie, this.marque, this.nom, this.prix);
+        copie.rabais = this.rabais;
+        return copie;
 
     }
 
