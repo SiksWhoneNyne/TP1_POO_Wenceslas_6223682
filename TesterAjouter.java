@@ -40,4 +40,3 @@ class TesterAjouter {
         assertFalse(config.ajouter(composant3), "Le composant ne devrait pas être ajouté car on dépasse le nombre de composants maximum permis");
     }
 }
-
