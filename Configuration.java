@@ -119,8 +119,4 @@ public class Configuration {
     public int getNbComposants() {
         return nbComposants;
     }
-
-    public void setPrixMax(double prixMax) {
-        this.prixMax = prixMax;
-    }
 }
