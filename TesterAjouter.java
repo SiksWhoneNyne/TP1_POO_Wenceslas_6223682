@@ -2,7 +2,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class TesterAjouter {
+public class TesterAjouter {
 
     private Configuration config;
     private Composant composant1, composant2, composant3;
