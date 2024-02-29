@@ -10,41 +10,43 @@ public class Composant {
         this.marque = marque;
         this.nom = nom;
         this.prix = prix;
-        this.rabais = 0;
+        this.rabais = 0.0;
     }
 
     public Composant copier() {
-        return new Composant(categorie, marque, nom, prix);
+        return new Composant(this.categorie, this.marque, this.nom, this.prix - this.prix * this.rabais);
     }
 
     public boolean estIdentique(Composant autre) {
-        return this.categorie.equals(autre.getCategorie()) &&
-                this.marque.equals(autre.getMarque()) &&
-                this.nom.equals(autre.getNom());
+        return this.categorie.equals(autre.categorie) &&
+                this.marque.equals(autre.marque) &&
+                this.nom.equals(autre.nom);
     }
 
     public double getPrix() {
-        return prix * (1 - rabais);
+        return this.prix - this.prix * this.rabais;
     }
 
     public String getCategorie() {
-        return categorie;
+        return this.categorie;
     }
 
     public String getMarque() {
-        return marque;
+        return this.marque;
     }
 
     public String getNom() {
-        return nom;
-    }
-
-    public void setPrix(double prix) {
-        this.prix = prix;
+        return this.nom;
     }
 
     public double getRabais() {
-        return rabais;
+        return this.rabais;
+    }
+
+    public void setPrix(double prix) {
+        if (prix >= 0) {
+            this.prix = prix;
+        }
     }
 
     public void setRabais(double rabais) {
@@ -55,6 +57,6 @@ public class Composant {
 
     @Override
     public String toString() {
-        return "[" + categorie + "] " + marque + " " + nom;
+        return "[" + this.categorie + "] " + this.marque + " " + this.nom;
     }
 }

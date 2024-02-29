@@ -1,27 +1,41 @@
 public class Configuration {
     private final String description;
-    private final double prixMax;
-    private final Composant[] composants;
+    private double prixMax;
+    private Composant[] composants;
     private int nbComposants;
-    private static final int MAX_COMPOSANTS = 20;
+    public static final int MAX_COMPOSANTS = 20;
 
     public Configuration(String description, double prixMax, Composant[] composants) {
         this.description = description.toUpperCase();
         this.prixMax = prixMax;
-        this.nbComposants = composants.length;
         this.composants = new Composant[MAX_COMPOSANTS];
-        for (int i = 0; i < nbComposants; i++) {
-            this.composants[i] = composants[i].copier();
+        this.nbComposants = 0;
+
+        for (int i = 0; i < composants.length; i++) {
+            if (composants[i] != null) {
+                this.ajouter(composants[i]);
+            }
         }
     }
 
     public Configuration(Configuration originale) {
-        this.description = originale.description;
-        this.prixMax = originale.prixMax;
-        this.nbComposants = originale.nbComposants;
+        this.description = originale.getDescription();
+        this.prixMax = originale.getPrixMax();
         this.composants = new Composant[MAX_COMPOSANTS];
-        for (int i = 0; i < nbComposants; i++) {
-            this.composants[i] = originale.composants[i].copier();
+        this.nbComposants = 0;
+
+        for (int i = 0; i < originale.getNbComposants(); i++) {
+            if (originale.getComposants()[i] != null) {
+                Composant copie = new Composant(
+                        originale.getComposants()[i].getCategorie(),
+                        originale.getComposants()[i].getMarque(),
+                        originale.getComposants()[i].getNom(),
+                        originale.getComposants()[i].getPrix()
+                );
+                copie.setRabais(originale.getComposants()[i].getRabais());
+                this.composants[i] = copie;
+                this.nbComposants++;
+            }
         }
     }
 
@@ -34,69 +48,79 @@ public class Configuration {
     }
 
     public Composant rechercher(String categorie) {
-        for (Composant composant : composants) {
-            if (composant != null && composant.getCategorie().equalsIgnoreCase(categorie)) {
-                return composant;
+        for (int i = 0; i < nbComposants; i++) {
+            if (composants[i].getCategorie().equalsIgnoreCase(categorie)) {
+                return composants[i];
             }
         }
         return null;
     }
 
-    public boolean ajouter(Composant composant) {
-        if (nbComposants >= MAX_COMPOSANTS || calculerTotal(0) + composant.getPrix() > prixMax) {
+    public boolean ajouter(Composant nouveauComposant) {
+        if (nbComposants >= MAX_COMPOSANTS) {
             return false;
         }
-        for (int i = 0; i < nbComposants; i++) {
-            if (composants[i].getCategorie().equalsIgnoreCase(composant.getCategorie())) {
-                return false;
-            }
+        if (calculerTotal(0) + nouveauComposant.getPrix() > prixMax) {
+            return false;
         }
-        composants[nbComposants++] = composant.copier();
+        if (rechercher(nouveauComposant.getCategorie()) != null) {
+            return false;
+        }
+        composants[nbComposants] = nouveauComposant.copier();
+        nbComposants++;
         return true;
     }
 
-    public boolean retirer(Composant composant) {
+    public boolean retirer(Composant composantASupprimer) {
         for (int i = 0; i < nbComposants; i++) {
-            if (composants[i].estIdentique(composant)) {
+            if (composants[i].estIdentique(composantASupprimer)) {
                 for (int j = i; j < nbComposants - 1; j++) {
                     composants[j] = composants[j + 1];
                 }
-                composants[--nbComposants] = null;
+                composants[nbComposants - 1] = null;
+                nbComposants--;
                 return true;
             }
         }
         return false;
     }
 
-    public boolean remplacer(Composant composant) {
+    public boolean remplacer(Composant composantRemplacement) {
         for (int i = 0; i < nbComposants; i++) {
-            if (composants[i].getCategorie().equalsIgnoreCase(composant.getCategorie())) {
-                composants[i] = composant.copier();
+            if (composants[i].getCategorie().equalsIgnoreCase(composantRemplacement.getCategorie())) {
+                composants[i] = composantRemplacement.copier();
                 return true;
             }
         }
         return false;
     }
 
+    @Override
     public String toString() {
-        String result = description + " (max " + prixMax + ",00$) :\n";
-        int index = 1;
-
-        for (Composant composant : composants) {
-            if (composant != null) {
-                result += index + " : " + composant.toString() + "\n";
-                index++;
-            }
+        String resultat = description + " (max " + prixMax + "$):\n";
+        for (int i = 0; i < nbComposants; i++) {
+            resultat += " " + (i + 1) + " : " + composants[i] + " (" + composants[i].getPrix() + "$)\n";
         }
+        return resultat;
+    }
 
-        return result;
+    public String getDescription() {
+        return description;
+    }
+
+    public double getPrixMax() {
+        return prixMax;
+    }
+
+    public Composant[] getComposants() {
+        return composants;
     }
 
     public int getNbComposants() {
         return nbComposants;
     }
 
-    public Composant[] getComposants() {
-        return composants;
+    public void setPrixMax(double prixMax) {
+        this.prixMax = prixMax;
     }
 }
